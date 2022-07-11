@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_vacat_stock_view_form" model="ir.ui.view">
+        <field name="name">hr_vacat_stock.hr.employee.view.form</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+
+            <div class="oe_button_box" position="inside">
+                <button class="oe_stat_button" name="inventario_tiempo" type="object" icon="fa-clock-o">
+                     <div class="o_stat_info">
+                        <span class="o_stat_value" >
+                            <b>Inventario de tiempo</b>
+                        </span>
+                        <span class="o_stat_value">
+                            D: H: Min.
+                        </span>
+                         <span class="o_stat_value">
+                            <field name="cantidad_dias" />:
+                            <field name="cantidad_horas" />:
+                            <field name="cantidad_minutos" />
+                        </span>
+                    </div>
+                </button>
+
+            </div>
+            <xpath expr="//field[@name='job_id']" position="after">
+                 <field name="tipo_dias_vacaciones" />
+            </xpath>
+             <xpath expr="//notebook/page[@name='personal_information']" position="inside">
+                 <link href="/hr_vacat_stock/static/src/css/hr_employ_stil.css" rel="stylesheet" />
+                 <group string="Datos Personales" coll="2">
+
+                    <group name="" >
+                        <field name="direccion_completa"/>
+                        <field name="corregimiento"/>
+                        <field name="distrito"/>
+                        <field name="provincia"/>
+                    </group>
+                    <group name="" >
+                        <field name="telefono"/>
+                        <field name="correopersonal"/>
+                        <field name="edad"/>
+                        <field name="enfermedad"/>
+                    </group>
+                 </group>
+                 <group string="Personas con quien vive">
+                    <div>
+                        <field name="personas_vive" widget="section_and_note_one2many" mode="tree,kamban">
+                            <tree  editable="bottom" string="Personas con quien vive" edit="0" sample="1" >
+                                <control>
+                                    <create name="add_line_control" string="Añadir"/>
+                                </control>
+                                <field name="nombre_aplellido" readonly="False"/>
+                                <field name="parentesco" readonly="False"/>
+                                <field name="cedula" readonly="False"/>
+                                <field name="fecha_nac" readonly="False"/>
+                                <field name="edad" readonly="True"/>
+                            </tree>
+                        </field>
+                     </div>
+                 </group>
+                 <group string="Personas que dependen">
+                    <div>
+                        <field name="persoans_depende" widget="section_and_note_one2many" mode="tree,kamban">
+                             <tree  editable="bottom" string="Personas que dependen" edit="0" sample="1" >
+                                <control>
+                                    <create name="add_line_control" string="Añadir"/>
+                                </control>
+                                <field name="nombre_aplellido" readonly="False"/>
+                                <field name="parentesco" readonly="False"/>
+                                <field name="cedula" readonly="False"/>
+                                <field name="fecha_nac" readonly="False"/>
+                                <field name="edad" readonly="True"/>
+                            </tree>
+                        </field>
+                     </div>
+                 </group>
+
+                <group name="" string="Anexo de documentos" coll="1">
+                    <div class="t_document_fechas" style="display: flex;"><label for="cedula"/>    <field name="cedula"/>Fecha:<field name="cedfecha" style="width:40%%"/> </div>
+                    <div class="t_document_fechas" style="display: flex;"><label for="hoja_vida"/> <field name="hoja_vida"/>Fecha:<field name="hoja_vida_fecha" style="width:40%%"/> </div>
+                    <div class="t_document_fechas" style="display: flex;"><label for="recordp"/>   <field name="recordp"/>Fecha:<field name="recordpfecha" style="width:40%%"/> </div>
+                    <div class="t_document_fechas" style="display: flex;"><label for="titulo"/>    <field name="titulo"/>Fecha:<field name="titulofecha" style="width:40%%"/> </div>
+                    <div class="t_document_fechas" style="display: flex;"><label for="cartas_ref"/><field name="cartas_ref"/>Fecha:<field name="cartas_reffecha" style="width:40%%"/> </div>
+                </group>
+
+            </xpath>
+        </field>
+    </record>
+
+     <record id="view_users_tiempo" model="ir.ui.view">
+            <field name="name">usuario_tiempo</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="hr.res_users_view_form_simple_modif"/>
+            <field name="arch" type="xml">
+                 <div class="oe_button_box" position="inside">
+                <button class="oe_stat_button" name="inventario_tiempo" type="object" icon="fa-clock-o">
+                     <div class="o_stat_info">
+                        <span class="o_stat_value" >
+                            <b>Inventario de tiempo</b>
+                        </span>
+                        <span class="o_stat_value">
+                            D: H: Min.
+                        </span>
+                         <span class="o_stat_value">
+                            <field name="cantidad_dias" />:
+                            <field name="cantidad_horas" />:
+                            <field name="cantidad_minutos" />
+                        </span>
+                    </div>
+                </button>
+
+            </div>
+            </field>
+        </record>
+
+
+
+</odoo>

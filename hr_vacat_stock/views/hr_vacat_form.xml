@@ -1,0 +1,283 @@
+<odoo>
+  <data>
+  </data>
+    <record id="hr_vacat_form_form" model="ir.ui.view">
+            <field name="name">Formulario de Vacaciones</field>
+            <field name="model">hr.vacat.form</field>
+            <field name="arch" type="xml">
+                 <form string="Inventario de tiempo"  >
+                     <header>
+                        <button
+                            name="aprobar_vacaciones"
+                            type="object"
+                            states="draft"
+                            string="Aprobar"
+                            class="oe_highlight"
+                        />
+                         <button
+                            name="cancelar_vacaciones"
+                            type="object"
+                            states="draft"
+                            string="Cancelar"
+                            class="oe_highlight"
+                        />
+                         <button
+                            name="borrador_vacaciones"
+                            type="object"
+                            groups="base.group_system"
+                            states="confirm,cancel"
+                            string="Borrador"
+                            class="oe_highlight"
+                        />
+                         <field name="state" widget="statusbar" />
+                     </header>
+                      <sheet>
+                         <group string="Formulario de Vacaciones">
+                             <group>
+                                 <field name="employee_id" string="Empleado" required="1" />
+                                 <field name="company_id" string="Empresa" />
+                                 <field name="name" string="name" invisible="1"/>
+                                 <field name="contrato" string="Contrato" domain="[('employee_id', '=', employee_id)]"
+                                        context="{'default_employee_id': employee_id}"
+                                        required="1"/>
+                                 <field name="razon" string="Razón" />
+                             </group>
+                             <group>
+                                 <field name="fecha_inicio" string="Fecha de Inicio" required="1"/>
+                                 <field name="fecha_fin" string="Fecha fin" required="1" />
+                                 <field name="dias" string="Días" />
+                                 <field name="request_hour_from" string="Horas de inicio" readonly="1"/>
+                                 <field name="request_hour_to" string="Hora Fin" readonly="1"/>
+                             </group>
+                         </group>
+
+                      </sheet>
+                      <div class="oe_chatter">
+                           <field name="message_follower_ids" groups="base.group_user"/>
+                            <field name="activity_ids"/>
+                            <field name="message_ids"/>
+                        </div>
+                </form>
+            </field>
+        </record>
+
+     <record id="hr_vacat_form_tree" model="ir.ui.view">
+            <field name="name">Formulario de Vacaciones</field>
+            <field name="model">hr.vacat.form</field>
+            <field name="arch" type="xml">
+                 <tree string="Inventario de tiempo" edit="false" >
+                     <field name="employee_id" string="Empleado" />
+                     <field name="fecha_inicio" string="Fecha de inicio" />
+                     <field name="fecha_fin" string="Fecha fin" />
+                     <field name="dias" string="Días" />
+                     <field name="state" string="Estado" />
+                     <field name="razon" string="Motivo" />
+                </tree>
+            </field>
+        </record>
+         <record id="paperformat_carta_minimo" model="report.paperformat"><!--#actualizar-->
+            <field name="name">Formulario_vacaciones</field>
+            <field name="default" eval="True" />
+            <!---<field name="format">custom</field>
+            <field name="page_height">340</field>
+            <field name="page_width">220</field>-->
+
+            <field name="format">Letter</field>
+            <!--<field name="page_height">0</field>
+            <field name="page_width">0</field>-->
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">3</field>
+            <field name="margin_bottom">3</field>
+            <field name="margin_left">3</field>
+            <field name="margin_right">3</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">0</field>
+            <field name="dpi">105</field>
+        </record>
+
+      <record id="report_hr_vacat_form"  model="ir.actions.report">
+         <field name="name">Imprimir Formulario</field>
+         <field name="model">hr.vacat.form</field>
+         <field name="report_type">qweb-pdf</field>
+         <field name="report_name">hr_vacat_stock.template_formvc</field>
+         <field name="report_file">hr_vacat_stock.template_formvc</field>
+          <field name="paperformat_id" ref="hr_vacat_stock.paperformat_carta_minimo"/>
+         <field name="binding_model_id" ref="model_hr_vacat_form"/>
+	    <field name="print_report_name">('Formulario_Vacaciones - %s' % (object.name))</field>
+     </record>
+
+
+
+    <template id="template_formvc">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <div >
+                        <table style="width: 100%; height: 100%;">
+                            <thead> </thead>
+                            <tbody>
+                                <tr style="height: 50%; vertical-align: text-top; ">
+                                    <td>
+                                        <t t-call="hr_vacat_stock.informe_formulario" style="font-family: 'Times New Roman', Times, serif;"/>
+                                        <t style="font-size:5.0pt;">Generado por: <span t-field="o.write_uid"/> </t>
+                                    </td>
+                                </tr>
+                                <tr style="height: 50%; vertical-align: text-top;   padding-top:5px;">
+                                    <td style="border-top:2.0px solid windowtext;">
+                                        <t t-call="hr_vacat_stock.informe_formulario" style="font-family: 'Times New Roman', Times, serif;"/>
+                                        <t style="font-size:5.0pt;">Generado por: <span t-field="o.write_uid"/> </t>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+    <template id="informe_formulario">
+         <t style=" font-weight:bold;">
+
+
+                                <h3>  FORMULARIO DE VACACIONES</h3>
+                                <H5>
+                                    <table style="width: 100%;">
+                                        <tr style="width: 100%;">
+
+                                            <td style="text-align:left; text-transform: uppercase; font-weight:bold;">
+                                                CIA <t t-foreach="o.company_id" t-as="p">:<span t-field="p.numero_company"/></t>
+                                                <span t-field="o.company_id"/></td>
+                                            <td style="text-align:right; font-weight:bold;">
+                                                #DOCUMENTO: 0000<span t-field="o.id"/></td>
+                                        </tr>
+                                    </table>
+                                </H5>
+                            </t>
+                        <br> </br>
+                             <table style="width: 100%; ">
+                                 <thead>
+                                    <tr>
+                                        <td style="width: 25%; font-weight:bold;">
+                                            <t style=" font-weight:bold;">CÉDULA: </t><t t-foreach="o.employee_id" t-as="p" style="font-weight:normal;"><span t-field="p.identification_id" style="font-weight:normal;"/></t>
+                                        </td>
+                                        <td style="width: 25%; text-align:right;font-weight:bold;">
+                                            <t style=" font-weight:bold; ">#Seguro Social:</t>
+                                        </td>
+                                        <td style="width: 25%;">
+
+
+                                        </td>
+                                    </tr>
+                                 </thead>
+                                 <tbody>
+                                     <tr>
+                                         <td style="width: 25%;font-weight:bold;">
+                                            <t style=" ">COLABORADOR:  <a style="font-weight:normal;">00</a></t><t t-foreach="o.employee_id" t-as="p" ><span t-field="p.id" style="font-weight:normal;" /> - <span t-field="p.name" style="font-weight:normal;"/></t>
+                                        </td>
+                                        <td style="width: 25%; text-align:right;font-weight:bold;">
+                                            <t style="  ">Fecha de Nacimiento:  </t>
+                                        </td>
+                                        <td style="width: 25%; ">
+                                            <t t-foreach="o.employee_id" t-as="p"><span t-field="p.birthday" style='text-transform:None;font-weight:normal;' t-options='{"widget": "date","format": "dd-MMM-yyyy"}'/> </t>
+                                        </td>
+                                     </tr>
+                                     <tr>
+                                         <td style="width: 25%; font-weight:bold;">
+                                            <t style="  ">DEPARTAMENTO:  </t><t t-foreach="o.employee_id" t-as="p" ><span t-field="p.department_id" style="font-weight:normal;"/></t>
+                                        </td>
+                                        <td style="width: 25%; text-align:right; font-weight:bold;">
+                                            <t style="  ">Clave Renta: A0</t>
+                                            </td>
+                                        <td style="width: 25%;">
+
+                                        </td>
+                                     </tr>
+                                      <tr>
+                                         <td style="width: 25%; font-weight:bold;">
+                                            <t style=" ">CARGO:  </t><t t-foreach="o.employee_id" t-as="p"><span t-field="p.job_title" style="font-weight:normal;"/></t>
+                                        </td>
+                                        <td style="width: 25%; text-align:right;">
+                                            </td>
+                                        <td style="width: 25%;">
+
+                                        </td>
+                                     </tr>
+                                 </tbody>
+
+                             </table>
+                            <table style="width: 100%;  border:1.0px solid windowtext; " >
+                                <thead>
+                                    <tr style="background-color:#e4e9f2">
+                                        <td style="width: 20%;   padding:5px;">Fecha</td>
+                                        <td style="width: 30%;;  padding:5px;">Tipo</td>
+                                        <td style="width: 18%;   padding:5px;">Desde</td>
+                                        <td style="width: 18%;  padding:5px;">Hasta</td>
+                                        <td style="width: 14%;  padding:5px;">Horas</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr >
+                                        <td style="width: 20%;   padding:5px;"><span t-esc="context_timestamp(datetime.datetime.now()).strftime('%a %d-%b-%Y')"/></td>
+                                        <td style="width: 30%;   padding:5px;">Registrar VACACIONES</td>
+                                        <td style="width: 18%;   padding:5px;"><span t-esc="o.fecha_inicio.strftime('%a %d-%b-%Y')"/></td>
+                                        <td style="width: 18%;   padding:5px;"><span t-esc="o.fecha_fin.strftime('%a %d-%b-%Y')"/></td>
+                                        <td style="width: 14%;   padding:5px;"><span t-field="o.request_hour_from"/> - <span t-field="o.request_hour_to"/></td>
+                                    </tr>
+                                    <tr >
+                                        <td style="width: 20%; border:none;  padding:5px;"> </td>
+                                        <td style="width: 30%; border:none;  padding:5px;"/>
+                                        <td style="width: 18%; border:none;  padding:5px; background-color:#e4e9f2">Días: <span t-field="o.dias" style="font-weight:normal;"/></td>
+                                        <td style="width: 18%; border:none;  padding:5px;"/>
+                                        <td style="width: 14%; border:none;  padding:5px;"/>
+                                    </tr>
+                                     <tr style="border:none;">
+                                         <td style="border:none;">
+                                            Razón: <span t-field="o.razon" style="font-weight:normal;"/>
+                                         </td>
+                                         <td style="border:none;"/>
+                                         <td style="border:none;"/>
+                                         <td style="border:none;"/>
+                                         <td style="border:none;"/>
+                                     </tr>
+
+
+                                </tbody>
+                            </table>
+                        <br></br>
+                            <table style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <td style="width: 20%; text-align:right;">Firma del Colaborador:</td>
+                                        <td style="width: 25%; border-bottom:1.0pt solid windowtext;"/>
+                                        <td style="width: 2%;"/>
+                                        <td style="width: 15%; text-align:right;">Autorizado por:</td>
+                                        <td style="width: 25%; border-bottom:1.0pt solid windowtext;"/>
+                                        <td style="width: 13%;"/>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="width: 20%; text-align:right;">Fecha / Hora:</td>
+                                        <td style="width: 25%; border-bottom:1.0pt solid windowtext;"/>
+                                        <td style="width: 2%;"/>
+                                        <td style="width: 15%; text-align:right;">Fecha / Hora:</td>
+                                        <td style="width: 25%; border-bottom:1.0pt solid windowtext;"/>
+                                        <td style="width: 13%;"/>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        <br></br>
+    </template>
+
+    <record model="ir.actions.act_window" id="hr_vacat_form_window">
+        <field name="name">Formularios de Vacaciones</field>
+        <field name="res_model">hr.vacat.form</field>
+        <field name="view_mode">tree,form</field>
+      </record>
+
+
+    <menuitem name="Formularios de Vacaciones" id="hr_vacat_stockformulariovc" parent="hr.menu_hr_root"
+                action="hr_vacat_form_window"
+         groups="hr_contract.group_hr_contract_manager"/>
+
+</odoo>

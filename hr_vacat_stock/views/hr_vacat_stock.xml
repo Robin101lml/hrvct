@@ -1,0 +1,133 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+
+    <record model="ir.ui.view" id="hr_vacat_stock.list">
+      <field name="name">hr_vacat_stock list</field>
+      <field name="model">hr.vacat.stock</field>
+      <field name="arch" type="xml">
+        <tree   edit="false"
+                    decoration-danger="cantidad_dias &lt;0"
+                    decoration-success="cantidad_dias &gt;=0"
+                    default_order="create_date desc" ><!--create="false"-->
+
+          <field name="employee_ref" string="Empleado"/>
+          <field name="create_date" string="Fecha"/>
+          <field name="cantidad_dias" sum="Total"/>
+          <field name="cantidad_horas" sum="Total"/>
+          <field name="cantidad_minutos" sum="Total"/>
+          <field name="desc"/>
+        </tree>
+      </field>
+    </record>
+    <record model="ir.ui.view" id="hr_vacat_stock.form">
+      <field name="name">hr_vacat_stock form</field>
+      <field name="model">hr.vacat.stock</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <group string="Registro">
+                <group string="Generales">
+                      <field name="employee_ref"/>
+                      <field name="create_date" string="Fecha" />
+                      <field name="cantidad_dias"/>
+                      <field name="cantidad_horas"/>
+                      <field name="cantidad_minutos"/>
+                      <field name="desc"/>
+                </group>
+                <group string="Origen">
+                    <field name="permisos" readonly="1" />
+                    <field name="vacaciones" readonly="1" />
+                </group>
+            </group>
+
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+      <record id="hr_vacat_stock_search" model="ir.ui.view">
+            <field name="name">hr.vacat.stock.search</field>
+            <field name="model">hr.vacat.stock</field>
+            <field name="arch" type="xml">
+                <search string="Payslip Analysis">
+                    <field name="employee_ref" invisible="1"/>
+                    <field name="create_date" invisible="1"/>
+                    <filter string="Este Mes" name="thismonth" domain="[('create_date','&gt;=',time.strftime('%%Y-%%m-01'))]"/>
+                    <filter string="Este Año" name="year"  domain="[('create_date','&lt;=', time.strftime('%%Y-12-31')),('create_date','&gt;=',time.strftime('%%Y-01-01')),('create_date','&lt;=', time.strftime('%%Y-12-31')),('create_date','&gt;=',time.strftime('%%Y-01-01'))]"/>
+
+                </search>
+            </field>
+        </record>
+
+
+    <!-- actions opening views on models -->
+
+    <record model="ir.actions.act_window" id="hr_vacat_stock.action_window">
+      <field name="name">hr.vacat.stock</field>
+      <field name="res_model">hr.vacat.stock</field>
+      <field name="view_mode">tree,form</field>
+      <field name="context">{'group_by':'employee_ref'}</field>
+    </record>
+
+
+
+    <record id="hr_contract_form_inherit2" model="ir.ui.view">
+        <field name="name">hr.contract.view.form.inherit2</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='hr_responsible_id']" position="after">
+                <field name="fecha_ultimas_vacaciones"/>
+            </xpath>
+        </field>
+    </record>
+
+
+      <!--acción automática para revisar y crear bolsa de vacaciones-->
+      <record id="ir_cron_generar_bolsa_vacaciones" model="ir.cron">
+            <field name="name">Generar bolsa vacaciones</field>
+            <field name="model_id" ref="model_hr_vacat_stock"/>
+            <field name="state">code</field>
+            <field name="active">False</field>
+            <field name="code"> model.generar_bolsa_vacaciones()</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">months</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+        </record>
+
+  </data>
+        <record id="hr_vacat_stockconsult_tree" model="ir.ui.view">
+            <field name="name">Inventario de tiempo General</field>
+            <field name="model">hr.vacat.stock.view</field>
+            <field name="arch" type="xml">
+                 <tree string="Inventario de tiempo General" create="false" edit="false"
+                        decoration-success="dias &gt; 15 "
+                        decoration-info="dias &lt;= 15 and dias &gt;= 0"
+                        decoration-danger="dias &lt; 0" default_order="dias desc" >
+                    <field name="name" string="Empleado" widget="badge"
+                        decoration-success="dias &gt; 15 "
+                        decoration-info="dias &lt;= 15 and dias &gt;= 0"
+                        decoration-danger="dias &lt; 0"/>
+                    <field name="dias" />
+                    <field name="horas" />
+                    <field name="minutos" />
+                    <field name="company" />
+                </tree>
+            </field>
+        </record>
+
+      <record model="ir.actions.act_window" id="hr_vacat_stockconsultaction_window">
+        <field name="name">Inventario de Tiempo</field>
+        <field name="res_model">hr.vacat.stock.view</field>
+        <field name="view_mode">tree</field>
+      </record>
+
+
+
+      <menuitem name="Inventario Tiempo" id="hr_vacat_stockm" parent="hr.menu_hr_root"
+                action="hr_vacat_stockconsultaction_window"
+         groups="hr_contract.group_hr_contract_manager"/>
+</odoo>

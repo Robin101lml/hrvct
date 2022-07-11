@@ -1,0 +1,171 @@
+<odoo>
+  <data>
+  </data>
+      <record id="report_hr_leave_form"  model="ir.actions.report">
+         <field name="name">Imprimir Formulario</field>
+         <field name="model">hr.leave</field>
+         <field name="report_type">qweb-pdf</field>
+         <field name="report_name">hr_vacat_stock.leave_form</field>
+         <field name="report_file">hr_vacat_stock.leave_form</field>
+          <field name="paperformat_id" ref="hr_vacat_stock.paperformat_carta_minimo"/>
+         <field name="binding_model_id" ref="model_hr_leave"/>
+	    <field name="print_report_name">('FORMULARIO DE PERMISOS - %s' % (object.employee_id.name))</field>
+     </record>
+
+    <template id="leave_form">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <div >
+                        <table style="width: 100%; height: 100%;">
+                            <thead> </thead>
+                            <tbody>
+                                <tr style="height: 50%; vertical-align: text-top; ">
+                                    <td>
+                                        <t t-call="hr_vacat_stock.informe_leave" style="font-family: 'Times New Roman', Times, serif;"/>
+                                        <t style="font-size:5.0pt;">Generado por: <span t-field="o.write_uid"/> </t>
+                                    </td>
+                                </tr>
+                                <tr style="height: 50%; vertical-align: text-top;   padding-top:5px;">
+                                    <td style="border-top:2.0px solid windowtext;">
+                                        <t t-call="hr_vacat_stock.informe_leave" style="font-family: 'Times New Roman', Times, serif;"/>
+                                        <t style="font-size:5.0pt;">Generado por: <span t-field="o.write_uid"/> </t>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </template>
+     <template id="informe_leave">
+         <t style=" font-weight:bold;">
+
+
+                                <h3>  FORMULARIO DE PERMISOS</h3>
+                                <H5>
+                                    <table style="width: 100%;">
+                                        <tr style="width: 100%;">
+
+                                            <td style="text-align:left; text-transform: uppercase; font-weight:bold;">
+                                                CIA:  <t t-foreach="o.employee_id" t-as="p"><span t-field="p.company_id"/></t>
+                                                </td>
+                                            <td style="text-align:right; font-weight:bold;">
+                                                #DOCUMENTO: 0000<span t-field="o.id"/></td>
+                                        </tr>
+                                    </table>
+                                </H5>
+                            </t>
+                        <br> </br>
+                             <table style="width: 100%; ">
+                                 <thead>
+                                    <tr>
+                                        <td style="width: 25%; font-weight:bold;">
+                                            <t style=" font-weight:bold;">CÉDULA: </t><t t-foreach="o.employee_id" t-as="p" style="font-weight:normal;"><span t-field="p.identification_id" style="font-weight:normal;"/></t>
+                                        </td>
+                                        <td style="width: 25%; text-align:right;font-weight:bold;">
+                                            <t style=" font-weight:bold; ">#Seguro Social:</t>
+                                        </td>
+                                        <td style="width: 25%;">
+
+
+                                        </td>
+                                    </tr>
+                                 </thead>
+                                 <tbody>
+                                     <tr>
+                                         <td style="width: 25%;font-weight:bold;">
+                                            <t style=" ">COLABORADOR:  <a style="font-weight:normal;">00</a></t><t t-foreach="o.employee_id" t-as="p" ><span t-field="p.id" style="font-weight:normal;" /> - <span t-field="p.name" style="font-weight:normal;"/></t>
+                                        </td>
+                                        <td style="width: 25%; text-align:right;font-weight:bold;">
+                                            <t style="  ">Fecha de Nacimiento:  </t>
+                                        </td>
+                                        <td style="width: 25%; ">
+                                            <t t-foreach="o.employee_id" t-as="p"><span t-field="p.birthday" style='text-transform:None;font-weight:normal;' t-options='{"widget": "date","format": "dd-MMM-yyyy"}'/> </t>
+                                        </td>
+                                     </tr>
+                                     <tr>
+                                         <td style="width: 25%; font-weight:bold;">
+                                            <t style="  ">DEPARTAMENTO:  </t><t t-foreach="o.employee_id" t-as="p" ><span t-field="p.department_id" style="font-weight:normal;"/></t>
+                                        </td>
+                                        <td style="width: 25%; text-align:right; font-weight:bold;">
+                                            <t style="  ">Clave Renta: A0</t>
+                                            </td>
+                                        <td style="width: 25%;">
+
+                                        </td>
+                                     </tr>
+                                      <tr>
+                                         <td style="width: 25%; font-weight:bold;">
+                                            <t style=" ">CARGO:  </t><t t-foreach="o.employee_id" t-as="p"><span t-field="p.job_title" style="font-weight:normal;"/></t>
+                                        </td>
+                                        <td style="width: 25%; text-align:right;">
+                                            </td>
+                                        <td style="width: 25%;">
+
+                                        </td>
+                                     </tr>
+                                 </tbody>
+
+                             </table>
+                            <table style="width: 100%;  border:1.0px solid windowtext; " >
+                                <thead>
+                                    <tr style="background-color:#e4e9f2">
+                                        <td style="width: 20%;   padding:5px;">Fecha</td>
+                                        <td style="width: 30%;;  padding:5px;">Tipo</td>
+                                        <td style="width: 18%;   padding:5px;">Desde</td>
+                                        <td style="width: 18%;  padding:5px;">Hasta</td>
+                                        <td style="width: 14%;  padding:5px;">Duración</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr >
+                                        <td style="width: 20%;   padding:5px;"><span t-esc="context_timestamp(datetime.datetime.now()).strftime('%a %d-%b-%Y')"/></td>
+                                        <td style="width: 30%;   padding:5px;"><span t-field="o.holiday_status_id"/></td>
+                                        <td style="width: 18%;   padding:5px;"><span t-esc="o.date_from.strftime('%a %d-%b-%Y')"/></td>
+                                        <td style="width: 18%;   padding:5px;"><span t-esc="o.date_to.strftime('%a %d-%b-%Y')"/></td>
+                                        <td style="width: 14%;   padding:5px;"><span t-field="o.duration_display"/> </td>
+                                    </tr>
+
+                                     <tr style="border:none;">
+                                         <td style="border:none;">
+                                            Razón: <span t-field="o.name" style="font-weight:normal;"/>
+                                         </td>
+                                         <td style="border:none;"/>
+                                         <td style="border:none;"/>
+                                         <td style="border:none;"/>
+                                         <td style="border:none;"/>
+                                     </tr>
+
+
+                                </tbody>
+                            </table>
+                        <br></br>
+                            <table style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <td style="width: 20%; text-align:right;">Firma del Colaborador:</td>
+                                        <td style="width: 25%; border-bottom:1.0pt solid windowtext;"/>
+                                        <td style="width: 2%;"/>
+                                        <td style="width: 15%; text-align:right;">Autorizado por:</td>
+                                        <td style="width: 25%; border-bottom:1.0pt solid windowtext;"/>
+                                        <td style="width: 13%;"/>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="width: 20%; text-align:right;">Fecha / Hora:</td>
+                                        <td style="width: 25%; border-bottom:1.0pt solid windowtext;"/>
+                                        <td style="width: 2%;"/>
+                                        <td style="width: 15%; text-align:right;">Fecha / Hora:</td>
+                                        <td style="width: 25%; border-bottom:1.0pt solid windowtext;"/>
+                                        <td style="width: 13%;"/>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        <br></br>
+    </template>
+
+
+
+</odoo>
